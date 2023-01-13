@@ -1,0 +1,341 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref} %links and references
+\usepackage{amsmath} %binom
+\usepackage{listings} %code blocks
+\usepackage{color} %color keywords
+\usepackage[letterpaper, margin=1in]{geometry} %change the margins
+\usepackage{graphicx} %insert images
+\usepackage{float} %force figure placement
+
+\lstset{
+    language=R,
+    backgroundcolor=\color[rgb]{.95,.95,.95},
+    basicstyle=\ttfamily
+    % xrightmargin=0.5\textwidth
+}
+\setlength{\parindent}{0pt} %removes auto-indent from 2nd+ paragraph
+
+\title{ISEN 310 Notes}
+\author{Christopher Abib}
+\date{December 2022}
+
+\begin{document}
+
+\maketitle
+
+\section*{Descriptive Statistics}
+
+\subsection*{Measures of Location}
+The \textit{Mean} represents the calculated center of a set of values.
+The \textit{Sample Mean} ($\bar{x}$) is the point estimate of the \textit{Population Mean} ($/mu$).
+$$ \Bar{x} = \frac{1}{n} \sum^n_{i=1} x_i$$
+
+The \textit{Median} represent the middling value of a set of numbers, after it has been ordered from least to greatest.
+The \textit{Sample Median} ($\tilde{x}$) is the point estimate of the \textit{Population Median} ($\Tilde{\mu}$).
+
+$$ \Tilde{x} = 
+\begin{cases}
+    n \mathrm{\ is\ even} & (\frac{n+1}{2})^{th} \mathrm{ordered\ value} \\
+    n \mathrm{\ is\ odd} & \mathrm{average\ of\ } (\frac{n}{2})^{th} \mathrm{\ and \ } (\frac{n}{2} + 1)^{th} \mathrm{ordered\ value}
+\end{cases}    
+$$
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=5in]{images/skew.png}
+\end{figure}
+
+\subsection*{Measures of Variability}
+
+The \textit{Sample Variance} ($s^2$) is the point estimate of the \textit{Population Variance} ($\sigma^2$). For this estimate, the $x_i$'s tend to be closer to the sample mean ($\Bar{x}$) than to the population mean ($\mu$). To compensate for this, the \textit{Sample Variance} is taken with 1 degree of freedom, having a denominator of $n-1$, where $n$ is the sample size.
+$$  s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2$$
+
+In the \textit{Population Variance} is taken with $N$ as the population size.
+$$ \sigma^2 = \frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2 $$
+
+The \textit{Sample Standard Deviation} ($s$) is the point estimate of the \textit{Population Standard Deviation} ($\sigma$).
+$$ s = \sqrt{s^2} $$
+$$ \sigma = \sqrt{\sigma^2} $$
+
+\begin{lstlisting}
+var(X)
+sd(X)
+\end{lstlisting}
+
+A measure of spread that is resistant to outliers is the \textit{Fourth Spread}, where $Q_i$ represents each quartile. Typically, any observation farther than $1.5 f_s$ from the closest quartile is an outlier. An outlier is extreme if it is more than $3 f_s$ from the nearest quartile, and mild otherwise.
+$$ f_s = Q_3 - Q_1 $$
+\begin{lstlisting}
+quantile(X, probs=c(0, .25, .5, .75, 1))
+\end{lstlisting}
+
+\section*{Probability}
+The \textit{Sample Space} of an experiment, denoted by $\mathcal{S}$, is the set of all outcomes of that experiment.
+
+An \textit{Event} is any collection (subset) of outcomes contained in the sample space $\mathcal{S}$. An event is simple if it consists of exactly one outcome and compound if it consists of more than one outcome.
+
+\vspace{1em}
+Some relations from set theory:
+\begin{enumerate}
+    \item The \textit{compliment} of an event $A$, denoted by $A'$, is the set of all outcomes in $\mathcal{S}$ that are not contained in $A$.
+    \item The \textit{union} of two events $A$ and $B$, denoted by $A \cup B$ and read "$A$ or $B$", is the event consisting of all outcomes that are in $A$ and/or $B$.
+    \item The \textit{intersection} of two events $A$ and $B$, denoted by $A \cap B$ and read "$A$ and $B$," is the event consisting of all outcomes that are in both $A$ and $B$.
+\end{enumerate}
+
+\vspace{1em}
+Let $\emptyset$ denote the \textit{null event} (the event consisting of no outcomes whatsoever). When $A \cap B = \emptyset$, $A$ and $B$ are said to be \textit{mutually exclusive} or \textit{disjoint} events.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=6in]{images/event venn diagrams.jpeg}
+\end{figure}
+
+Basic probability principles:
+
+\begin{enumerate}
+    \item \textit{Axiom 1}: For any event $A$, $P(A) \geq 0$
+    \item \textit{Axiom 2}: $P(\mathcal{S}) = 1$
+    \item \textit{Axiom 3}: If $A_1, A_2, A_3, \cdots$ are disjoint events, then $P(A_1 \cup A_2 \cup A_3 \cup \cdots) = P(A_1) + P(A_2) + P(A_3) + \cdots$
+    \item $P(\emptyset) = 0$
+    \item For any event $A$, $P(A) + P(A') = 1$
+    \item For any event $A$, $P(A) \leq 1$
+    \item \textit{Addition Rule}: For any two events $A$ and $B$,
+    $$ P(A \cup B) = P(A) + P(B) - P(A \cap B) $$
+    \item \textit{Addition Rule}: For any two events $A$, $B$, and $C$,
+    $$ P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C) $$
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1in]{images/A or B or C venn.jpeg}
+    \end{figure}
+\end{enumerate}
+
+\subsection*{Conditional Probability}
+For any two events $A$ and $B$ with $P(B)>0$, the \textit{conditional probability} of $A$ given that $B$ has occurred is defined by
+$$ P(A|B) = \frac{P(A \cap B)}{P(B)} $$
+and
+$$ P(A \cap B) = P(A|B) \cdot P(B) $$
+
+\subsubsection*{Bayes' Theorem}
+\textit{Law of Total Probability}: Let $A_1, ..., A_k$ be mutually exclusive and exhaustive events. Then for any other event $B$,
+$$ P(B) = \sum^k_{i=1} P(B|A_i) \cdot P(A_i) $$
+
+\textit{Bayes' Theorem}: Let $A_1, ..., A_k$ be mutually exclusive and exhaustive events with prior probabilities $P(A_i)$ where $(i = 1, ..., k$. Then for any other event $B$ for which $P(B) > 0$, the posterior probability of $A_j$ given that $B$ has occurred it
+$$ P(A_j|B) = \frac{P(A_j \cap B)}{P(B)} = \frac{P(B|A_j) \cdot P(A_j)}{\sum^k_{i=1} P(B|A_i) \cdot P(A_i)} \quad j = 1, ..., k $$
+
+\subsection*{Independence}
+Two events $A$ and $B$ are \textit{independent} if $P(A|B) = P(A)$ and are \textit{dependent} otherwise.
+
+\vspace{1em}
+\textit{Multiplication Rule}: $A$ and $B$ are independent if and only if
+$$ P(A \cap B) = P(A) \cdot P(B) $$
+
+Events $A_1, ..., A_n$ are \textit{mutually independent} if for every $k$ $(k=2, ..., n)$ and every subset of indices $i_1, ..., i_n$,
+$$ P(A_{i_1} \cap A_{i_2} \cap ... \cap A_{i_n} = P(A_{i_1}) \cdot P(A_{i_2}) \cdots P(A_{i_n}) $$
+
+\section*{Counting Techniques}
+Letting $N$ denote the number of outcomes in a sample space, where all outcomes are equally likely, and $N(A)$ represent the number of outcomes in an event $A$,
+$$ P(A) = \frac{N(A)}{N} $$
+\textit{Product Rule}: If the first element or object of an ordered pair can be selected in $n_1$ ways, and for each of these $n_1$ ways the second element of the pair can be selected in $n_2$ ways, then the number of pairs is $n_1 \cdot n_2$.
+
+\subsection*{Combinatorics}
+Combinatorics is an branch of math studying the enumeration, combination, and permutation of sets of elements.
+
+\subsubsection*{Combinations}
+aka: the \textit{binomial coefficient}, choice number, $n$ \textit{choose} $k$
+
+The number of ways of choosing $k$ \textbf{unordered} outcomes from $n$ possibilities.
+
+$$ {}_n \mathrm{C}_k = \binom{n}{k} = \frac{n!}{k! (n-k)!} $$
+
+This code returns the binomial coefficient:
+\begin{lstlisting}[language=Python]
+choose(n, k)
+\end{lstlisting}
+
+This code returns a '\textit{k} x \textit{length(X)}' matrix where the columns are each combination:
+\begin{lstlisting}[language=Python]
+combn(X, k)
+\end{lstlisting}
+
+\subsubsection*{Permutations}
+aka: arrangement number, order, $n$ \textit{pick} $k$
+
+$$ {}_n \mathrm{P}_k = \frac{n!}{(n-k)!} $$
+
+\begin{lstlisting}
+choose(n, k) * factorial(k)
+\end{lstlisting}
+
+\section*{Random Variables}
+For a given sample space $\mathcal{S}$ of some experiment, a \textit{random variable (rv)} is any rule that associates a number with each outcome in $\mathcal{S}$. In mathematical language, a random variable is a function whose domain is the sample space and whose range is the set of real numbers.
+Random variables are customarily denoted by uppercase letters; lower case letters are used to represent a particular value of the corresponding random variable.
+The notation $X(\omega) = x$ means that $x$ is the value associated with the outcome $\omega$ by the rv $X$.
+
+\vspace{1em}
+\textit{Discrete Random Variable}: an rv whose possible values either constitute a finite set or else can be listed in a countably (integer) infinite sequence
+
+\textit{Continuous Random Variable}: an rv in which both of the following apply
+\begin{enumerate}
+    \item Its set of possible values consists either of all numbers in a single interval on the number line (possibly infinite in extent)
+    \item No possible value of the variable has positive probability, that is, $P(X=c)=0$ for any possible value $c$
+\end{enumerate}
+
+\subsection*{Expected Value}
+$$ \mu_X = \mathrm{E}[X] $$
+
+\subsection*{Variance}
+
+Variance
+$$ \sigma_X^2 = \mathrm{Var}[X] = \mathrm{E}[X^2] - \mathrm{E}[X]^2$$
+
+
+Standard Deviation
+$$ \sigma_X = \sqrt{\mathrm{Var}[X]}$$
+
+Variance of a Linear Function
+$$ \mathrm{Var}[aX + b] = \sigma^2_{aX+b} = a^2\sigma^2_X $$
+
+
+\section*{Discrete Random Variables}
+$$ F(X) = P(X \leq x) $$
+
+\subsection*{Discrete Distributions}
+
+\subsubsection*{Bernoulli Distribution}
+\textit{Bernoulli Random Variable:} any random variable whose only possible values are 0 and 1.
+
+\subsubsection*{Binomial Distribution}
+The \textit{Binomial Random Variable} $X$ associated with a binomial experiment consisting of $n$ trials is defined as: $X$ = the numbers of successes among $n$ trials where there is a $p$ chance of each success.
+$$ X \sim \mathrm{Bin}(n, p) $$
+
+\begin{align*}
+    \mathrm{E}[X] &= np \\ \\
+    \mathrm{Var}[X] &= np(1-p) = npq \\ \\
+    b(x; n, p) &=
+    \begin{cases}
+        \binom{n}{x} p^x (1-p)^{n-x} & x = 0, 1, 2, ..., n \\
+        0 & otherwise
+    \end{cases} \\ \\
+    B(x; n, p) &= \sum_{y=0}^{x} b(y; n, p)
+\end{align*}
+
+R code to compute the distribution, where size=$n$ and prob=$p$.
+\begin{lstlisting}
+dbinom(x, size, prob) # pdf
+pbinom(q, size, prob) # cdf
+qbinom(p, size, prob) # quantile
+rbinom(n, size, prob) # random numbers
+\end{lstlisting}
+
+\subsubsection*{Poisson Distribution}
+
+$$ X \sim \mathrm{Poisson}(\lambda) $$
+
+\begin{align*}
+    \mathrm{E}[X] &= \lambda \\ \\
+    \mathrm{Var}[X] &= \lambda \\ \\
+    f(x; \lambda) &= \frac{e^{-\lambda} \cdot \lambda^x}{x!} \quad x = 1, 2, 3, ...\\ \\
+    F(x; \lambda) &= \sum_{y=0}^{x} f(y; \lambda)
+\end{align*}
+
+R code to compute the distribution, where lambda=$\lambda$
+\begin{lstlisting}
+dpois(x, lambda) # pdf
+ppois(q, lambda) # cdf
+qpois(p, lambda) # quantile
+rpois(n, lambda) # random numbers
+\end{lstlisting}
+
+\section*{Continuous Random Variables}
+
+\subsection*{Continuous Distributions}
+
+\subsubsection*{Normal Distribution}
+$$ X \sim \mathrm{N}(\mu, \sigma^2)$$
+
+\begin{align*}
+    \mathrm{E}[X] &= \mu \\ \\
+    \mathrm{Var}[X] &= \sigma^2 \\ \\
+    f(x; \lambda) &= \frac{1}{\sigma \sqrt{2\pi} } e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2} \quad - \infty < x < \infty\\ \\
+    F(x; \lambda) &= \frac{1}{2} \left[1 + \operatorname{erf}\left(\frac{x-\mu}{\sigma \sqrt 2 }\right)\right]  \quad - \infty < x < \infty
+\end{align*}
+
+R code to compute the distribution, where mean=$\mu$ and sd=$\sigma$.
+\begin{lstlisting}
+dnorm(x, mean=0, sd=1) # pdf
+pnorm(q, mean=0, sd=1) # cdf
+qnorm(p, mean=0, sd=1) # quantile
+rnorm(n, mean=0, sd=1) # random numbers
+\end{lstlisting}
+
+\subsubsection*{Standard Normal Distribution}
+Special case of the Normal Distribution
+$$ Z \sim \mathrm{N}(0, 1)$$
+$$ Z = \frac{X - \mu}{\sigma}$$
+
+\begin{align*}
+    \mathrm{E}[Z] &= 0 \\ \\
+    \mathrm{Var}[Z] &= 1 \\ \\
+    \varphi(z; \lambda) &= \frac{1}{\sqrt{2\pi} } e^{-\frac{z^2}{2}} \quad - \infty < z < \infty\\ \\
+    \Phi(z; \lambda) &= \frac{1}{2} \left[1 + \operatorname{erf}\left(\frac{z}{\sqrt 2 }\right)\right]  \quad - \infty < z < \infty
+\end{align*}
+
+\subsubsection*{Exponential Distribution}
+$$ X \sim \mathrm{Exp}(\lambda)$$
+
+Suppose that the number of events occurring in any time interval of length $t$ has a Poisson distribution $X \sim Poisson(\lambda = \alpha t)$ (where $\alpha$, the rate of the event process, is the expected number of events occurring in 1 unit of time) and that numbers of occurences in nonoverlapping intercals are indfependent of one another. Then the distribution of elapsed time between the occurrence of two successive events is $Y \sim Exp(\lambda = \alpha)$.
+
+\begin{align*}
+    \mathrm{E}[X] &= \frac{1}{\lambda} \\ \\
+    \mathrm{Var}[X] &= \frac{1}{\lambda^2} \\ \\
+    f(x;\lambda) &=
+    \begin{cases}
+        0 & x < 0 \\
+        \lambda e^{-\lambda x} & x \geq 0
+    \end{cases} \\ \\
+    F(x;\lambda) &=
+    \begin{cases}
+        0 & x < 0 \\
+        1 - e^{-\lambda x} & x \geq 0
+    \end{cases}
+\end{align*}
+
+R code to compute the distribution, where rate=$\lambda$.
+\begin{lstlisting}
+dexp(x, rate=1) # pdf
+pexp(q, rate=1) # cdf
+qexp(p, rate=1) # quantile
+rexp(n, rate=1) # random numbers
+\end{lstlisting}
+
+
+\subsubsection*{Gamma Distribution}
+$$ X \sim \mathrm{Gamma}(\alpha, \beta)$$
+
+The Exponential Distribution is actually a special case of the Gamma Distribution where $\mathrm{Gamma}(1, \lambda) = \mathrm{Exp}(\lambda)$.
+
+\begin{align*}
+    \mathrm{E}[X] &= \alpha \beta \\ \\
+    \mathrm{Var}[X] &= \alpha \beta^2
+\end{align*}
+
+R code to compute the distribution, where shape=$\alpha$ and rate=$\frac{1}{\beta}$.
+\begin{lstlisting}
+dgamma(x, shape, rate=1) # pdf
+pgamma(q, shape, rate=1) # cdf
+qgamma(p, shape, rate=1) # quantile
+rgamma(n, shape, rate=1) # random numbers
+\end{lstlisting}
+
+\section*{Joint Probability Distributions and Random Samples}
+
+The covariance between two rv's $X$ and $Y$
+$$ \mathrm{Cov}[X, Y] = \mathrm{E}[X \cdot Y] - \mu_X \cdot \mu_Y $$
+
+The correlation coefficient of $X$ and $Y$ denoted by Corr[$X, Y$] or $\rho_{X,Y}$
+$$ \mathrm{Corr}[X,Y] = \frac{\mathrm{Cov}[X, Y]}{\sigma_X \cdot \sigma_Y} $$
+
+\section*{Point Estimation}
+A \textit{point estimate} of a parameter $\theta$ is a single number that can be regarded as a sensible value for $\theta$. It is obtained by selecting a suitible statistic and computing its value from a given sample data. The selected statistic is called the \textit{point estimator} of $\theta$.
+
+\end{document}
